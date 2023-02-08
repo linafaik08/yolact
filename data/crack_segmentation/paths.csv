@@ -1,0 +1,6 @@
+path_image,image,path_mask
+./data/crack_segmentation/images/CFD_005.jpeg,CFD_005.jpeg,./data/crack_segmentation/masks/CFD_005.jpeg
+./data/crack_segmentation/images/CFD_004.jpeg,CFD_004.jpeg,./data/crack_segmentation/masks/CFD_004.jpeg
+./data/crack_segmentation/images/CFD_003.jpeg,CFD_003.jpeg,./data/crack_segmentation/masks/CFD_003.jpeg
+./data/crack_segmentation/images/CFD_002.jpeg,CFD_002.jpeg,./data/crack_segmentation/masks/CFD_002.jpeg
+./data/crack_segmentation/images/CFD_001.jpeg,CFD_001.jpeg,./data/crack_segmentation/masks/CFD_001.jpeg
