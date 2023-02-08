@@ -143,7 +143,7 @@ crack_segmentation_dataset = dataset_base.copy({
     'annotation_file': './data/crack_segmentation/annotations/annotations.json', 
     
     'train_info': './data/coco/annotations/annotations_train.json',
-    'valid_info': './data/coco/annotations/iannotations_val2014.json',
+    'valid_info': './data/coco/annotations/annotations_test.json',
 
     'label_map': COCO_LABEL_MAP
 })
@@ -793,7 +793,7 @@ crack_seg_resnet101 = yolact_base_config.copy({
     'name': "crack_seg_resnet101", # Will default to yolact_resnet50_pascal
     
     # Dataset stuff
-    'dataset': crack_segmentation,
+    'dataset': crack_segmentation_dataset,
     'num_classes': 1 + 1,
 
     #'max_iter': 120000,
