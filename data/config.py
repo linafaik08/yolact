@@ -141,11 +141,13 @@ crack_segmentation_dataset = dataset_base.copy({
     'images': './data/crack_segmentation/images/',
     'masks': './data/crack_segmentation/masks/',
     'annotation_file': './data/crack_segmentation/annotations/annotations.json', 
-    
+
+    'train_images': './data/crack_segmentation/images/',
     'train_info': './data/crack_segmentation/annotations/annotations_train.json',
+    'valid_images': './data/crack_segmentation/images/',
     'valid_info': './data/crack_segmentation/annotations/annotations_val.json',
 
-    'label_map': COCO_LABEL_MAP
+    'label_map': {1:  1}
 })
 
 
