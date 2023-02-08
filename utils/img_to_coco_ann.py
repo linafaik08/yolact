@@ -34,7 +34,7 @@ def create_sub_masks(mask_image, width, height):
 
     return sub_masks
 
-def create_sub_mask_annotation(sub_mask, tol = 70):
+def create_sub_mask_annotation(sub_mask, tol, threshold_area):
     # Find contours (boundary lines) around each sub-mask
     # Note: there could be multiple contours if the object
     # is partially occluded. (E.g. an elephant behind a tree)
@@ -53,8 +53,6 @@ def create_sub_mask_annotation(sub_mask, tol = 70):
         poly = Polygon(contour)
 
         poly = poly.simplify(tol, preserve_topology=True)
-
-        threshold_area = 10
 
         if(poly.is_empty) or poly.area<threshold_area:
             # Go to next iteration, dont save empty values in list
@@ -121,7 +119,7 @@ def get_coco_json_format():
 
     return coco_format
 
-def images_annotations_info(paths_df, category_colors, multipolygon_ids, n_images_max=None):
+def images_annotations_info(paths_df, category_colors, multipolygon_ids, n_images_max=None, tol=100, threshold_area = 10):
     annotation_id = 0
     annotations = []
     images = []
@@ -151,9 +149,9 @@ def images_annotations_info(paths_df, category_colors, multipolygon_ids, n_image
                 category_id = category_colors[color]
 
                 # "annotations" info
-                polygons, segmentations = create_sub_mask_annotation(sub_mask)
+                polygons, segmentations = create_sub_mask_annotation(sub_mask,  tol, threshold_area)
 
-                #return polygons, segmentations
+                #return sub_masks, polygons, segmentations
 
                 # Check if we have classes that are a multipolygon
                 if category_id in multipolygon_ids:
@@ -172,41 +170,3 @@ def images_annotations_info(paths_df, category_colors, multipolygon_ids, n_image
             break
 
     return images, annotations, annotation_id
-
-def get_ann(ann, paths_df, folder):
-
-    ann_new = {k:v for k,v in ann.items() if k in ['info', 'licenses', 'categories']}
-
-    ann_new['images'] = []
-    ann_new['annotations'] = []
-
-    for i in range(paths_df.shape[0]):
-
-        line = paths_df.iloc[i]
-
-        k = 0
-
-        for v in ann['images']:
-            if line['path_image'] in v['file_name']:
-                break
-            k+=1
-
-        if k==len(ann['images']):
-            print('Nothing found for {}'.format(line['path_image']))
-        else:
-            img_name = ann['images'][k]['file_name']
-            ann['images'][k]['id'] = i
-            ann['images'][k]['image_id'] = i
-            ann['images'][k]['file_name'] = img_name
-
-            for c in ['segmentation', 'bbox', 'iscrowd', 'area']:
-                ann['images'][k][c] = ann['annotations'][k][c]
-            ann_new['images'].append(ann['images'][k])
-
-            ann['annotations'][k]['id'] = i
-            ann['annotations'][k]['image_id'] = i
-            ann['images'][k]['category_id'] = ann['annotations'][k]['category_id']
-
-            ann_new['annotations'].append(ann['images'][k])
-
-    return ann_new
