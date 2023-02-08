@@ -29,7 +29,7 @@ COLORS = (
 MEANS = (103.94, 116.78, 123.68)
 STD   = (57.38, 57.12, 58.40)
 
-#
+
 COCO_CLASSES = ('person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus',
                 'train', 'truck', 'boat', 'traffic light', 'fire hydrant',
                 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog',
