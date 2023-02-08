@@ -3,10 +3,11 @@ from math import sqrt
 import torch
 
 # for making bounding boxes pretty
-COLORS = ((244,  67,  54),
-          (233,  30,  99),
-          (156,  39, 176),
-          (103,  58, 183),
+COLORS = (
+        # (244,  67,  54),
+        #  (233,  30,  99),
+        # (156,  39, 176),
+        # (103,  58, 183),
           ( 63,  81, 181),
           ( 33, 150, 243),
           (  3, 169, 244),
@@ -53,6 +54,8 @@ COCO_LABEL_MAP = { 1:  1,  2:  2,  3:  3,  4:  4,  5:  5,  6:  6,  7:  7,  8:  8
                   62: 57, 63: 58, 64: 59, 65: 60, 67: 61, 70: 62, 72: 63, 73: 64,
                   74: 65, 75: 66, 76: 67, 77: 68, 78: 69, 79: 70, 80: 71, 81: 72,
                   82: 73, 84: 74, 85: 75, 86: 76, 87: 77, 88: 78, 89: 79, 90: 80}
+                  
+CATEGORY_MAP = {'crack': '(255, 255, 255)'}
 
 
 
@@ -107,6 +110,10 @@ class Config(object):
 
 dataset_base = Config({
     'name': 'Base Dataset',
+    
+    'images': './data/coco/images/',
+    'masks': './data/coco/masks/',
+    'annotation_file': './data/coco/annotation_file.json',
 
     # Training images and annotations
     'train_images': './data/coco/images/',
@@ -127,6 +134,21 @@ dataset_base = Config({
     # If not specified, this just assumes category ids start at 1 and increase sequentially.
     'label_map': None
 })
+
+crack_segmentation_dataset = dataset_base.copy({
+    'name': 'crack_segmentation',
+    
+    'images': './data/crack_segmentation/images/',
+    'masks': './data/crack_segmentation/masks/',
+    'annotation_file': './data/crack_segmentation/annotations/annotations.json', 
+    
+    'train_info': './data/coco/annotations/annotations_train.json',
+    'valid_info': './data/coco/annotations/iannotations_val2014.json',
+
+    'label_map': COCO_LABEL_MAP
+})
+
+
 
 coco2014_dataset = dataset_base.copy({
     'name': 'COCO 2014',
@@ -765,6 +787,18 @@ yolact_resnet50_pascal_config = yolact_resnet50_config.copy({
         'pred_scales': [[32], [64], [128], [256], [512]],
         'use_square_anchors': False,
     })
+})
+
+crack_seg_resnet101 = yolact_base_config.copy({
+    'name': "crack_seg_resnet101", # Will default to yolact_resnet50_pascal
+    
+    # Dataset stuff
+    'dataset': crack_segmentation,
+    'num_classes': 1 + 1,
+
+    #'max_iter': 120000,
+    #'lr_steps': (60000, 100000),
+    
 })
 
 # ----------------------- YOLACT++ CONFIGS ----------------------- #
