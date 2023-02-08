@@ -29,10 +29,6 @@ COLORS = (
 MEANS = (103.94, 116.78, 123.68)
 STD   = (57.38, 57.12, 58.40)
 
-<<<<<<< HEAD
-#
-=======
->>>>>>> b6ec595cf143a48bbc38a484cf85521a94a68fc2
 COCO_CLASSES = ('person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus',
                 'train', 'truck', 'boat', 'traffic light', 'fire hydrant',
                 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog',
@@ -147,11 +143,7 @@ crack_segmentation_dataset = dataset_base.copy({
     'annotation_file': './data/crack_segmentation/annotations/annotations.json', 
     
     'train_info': './data/coco/annotations/annotations_train.json',
-<<<<<<< HEAD
     'valid_info': './data/coco/annotations/annotations_test.json',
-=======
-    'valid_info': './data/coco/annotations/iannotations_val2014.json',
->>>>>>> b6ec595cf143a48bbc38a484cf85521a94a68fc2
 
     'label_map': COCO_LABEL_MAP
 })
@@ -801,11 +793,7 @@ crack_seg_resnet101 = yolact_base_config.copy({
     'name': "crack_seg_resnet101", # Will default to yolact_resnet50_pascal
     
     # Dataset stuff
-<<<<<<< HEAD
     'dataset': crack_segmentation_dataset,
-=======
-    'dataset': crack_segmentation,
->>>>>>> b6ec595cf143a48bbc38a484cf85521a94a68fc2
     'num_classes': 1 + 1,
 
     #'max_iter': 120000,
