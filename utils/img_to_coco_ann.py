@@ -20,7 +20,7 @@ def create_sub_masks(mask_image, width, height):
 
             # Check to see if we have created a sub-mask...
             pixel_str = str(pixel)
-            sub_mask = sub_masks.get(pixel_str)
+            sub_get_annmask = sub_masks.get(pixel_str)
             if sub_mask is None:
                # Create a sub-mask (one bit per pixel) and add to the dictionary
                 # Note: we add 1 pixel of padding in each direction
@@ -170,3 +170,41 @@ def images_annotations_info(paths_df, category_colors, multipolygon_ids, n_image
             break
 
     return images, annotations, annotation_id
+
+def get_ann(ann, paths_df, folder):
+
+    ann_new = {k:v for k,v in ann.items() if k in ['info', 'licenses', 'categories']}
+
+    ann_new['images'] = []
+    ann_new['annotations'] = []
+
+    for i in range(paths_df.shape[0]):
+
+        line = paths_df.iloc[i]
+
+        k = 0
+
+        for v in ann['images']:
+            if line['path_image'] in v['file_name']:
+                break
+            k+=1
+
+        if k==len(ann['images']):
+            print('Nothing found for {}'.format(line['path_image']))
+        else:
+            img_name = ann['images'][k]['file_name']
+            ann['images'][k]['id'] = i
+            ann['images'][k]['image_id'] = i
+            ann['images'][k]['file_name'] = img_name
+
+            for c in ['segmentation', 'bbox', 'iscrowd', 'area']:
+                ann['images'][k][c] = ann['annotations'][k][c]
+            ann_new['images'].append(ann['images'][k])
+
+            ann['annotations'][k]['id'] = i
+            ann['annotations'][k]['image_id'] = i
+            ann['images'][k]['category_id'] = ann['annotations'][k]['category_id']
+
+            ann_new['annotations'].append(ann['images'][k])
+
+    return ann_new
