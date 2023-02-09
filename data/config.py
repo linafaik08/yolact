@@ -687,7 +687,8 @@ yolact_base_config = coco_base_config.copy({
     'num_classes': len(coco2017_dataset.class_names) + 1,
 
     # Image Size
-    'max_size': 550,
+    # CHANGED
+    'max_size': 448,
     
     # Training params
     'lr_steps': (280000, 600000, 700000, 750000),
@@ -799,10 +800,28 @@ crack_seg_resnet101 = yolact_base_config.copy({
     # Dataset stuff
     'dataset': crack_segmentation_dataset,
     'num_classes': 1 + 1,
-
-    #'max_iter': 120000,
-    #'lr_steps': (60000, 100000),
+    'max_iter': 50000
     
+})
+
+crack_seg_darknet53 = yolact_darknet53_config.copy({
+    'name': "crack_seg_darknet53",  # Will default to yolact_resnet50_pascal
+
+    # Dataset stuff
+    'dataset': crack_segmentation_dataset,
+    'num_classes': 1 + 1,
+    'max_iter': 50000
+
+})
+
+crack_seg_resnet50 = yolact_resnet50_config.copy({
+    'name': "crack_seg_resnet50",  # Will default to yolact_resnet50_pascal
+
+    # Dataset stuff
+    'dataset': crack_segmentation_dataset,
+    'num_classes': 1 + 1,
+    'max_iter': 50000
+
 })
 
 # ----------------------- YOLACT++ CONFIGS ----------------------- #
