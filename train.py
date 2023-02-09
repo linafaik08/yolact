@@ -92,7 +92,7 @@ if args.dataset is not None:
     set_dataset(args.dataset)
 
 if args.max_iter is not None:
-    cfg.max_iter = cfg.max_iter
+    cfg.max_iter = args.max_iter
     print('Max iterations set to', cfg.max_iter)
 
 if args.autoscale and args.batch_size != 8:
