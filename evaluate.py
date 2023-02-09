@@ -609,12 +609,12 @@ def evalimage(net:Yolact, path:str, save_path:str=None):
     else:
         cv2.imwrite(save_path, img_numpy)
 
-def evalimages(net:Yolact, input_folder:str, output_folder:str):
+def evalimages(net:Yolact, input_folder:str, output_folder:str, max_iter:int):
     if not os.path.exists(output_folder):
         os.mkdir(output_folder)
 
     print()
-    for p in Path(input_folder).glob('*'): 
+    for i,p in enumerate(Path(input_folder).glob('*')):
         path = str(p)
         name = os.path.basename(path)
         name = '.'.join(name.split('.')[:-1]) + '.png'
@@ -622,6 +622,9 @@ def evalimages(net:Yolact, input_folder:str, output_folder:str):
 
         evalimage(net, path, out_path)
         #print(path + ' -> ' + out_path)
+
+        if i>max_iter:
+            break
     print('Done.')
 
 from multiprocessing.pool import ThreadPool
@@ -883,7 +886,7 @@ def evaluate(net:Yolact, dataset, train_mode=False):
     elif args.images is not None:
         print('args.images is not None')
         inp, out = args.images.split(':')
-        evalimages(net, inp, out)
+        evalimages(net, inp, out, args.max_images)
         return
     elif args.video is not None:
         if ':' in args.video:
