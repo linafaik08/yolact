@@ -171,40 +171,28 @@ def images_annotations_info(paths_df, category_colors, multipolygon_ids, n_image
 
     return images, annotations, annotation_id
 
-def get_ann(ann, paths_df, folder):
 
-    ann_new = {k:v for k,v in ann.items() if k in ['info', 'licenses', 'categories']}
+def get_ann(ann, idx):
+    ann_new = {k: v for k, v in ann.items() if k in ['info', 'licenses', 'categories']}
 
-    ann_new['images'] = []
-    ann_new['annotations'] = []
+    ann_new['images'] = [{}] * (len(idx))
+    ann_new['annotations'] = [{}] * (len(idx))
 
-    for i in range(paths_df.shape[0]):
+    for k, i in enumerate(idx):
 
-        line = paths_df.iloc[i]
+        ann_new['images'][k]['id'] = k
+        # ann_new['images'][k]['image_id'] = k
 
-        k = 0
+        for c in ['file_name', 'height', 'width']:
+            ann_new['images'][k][c] = ann['images'][i][c]
 
-        for v in ann['images']:
-            if line['path_image'] in v['file_name']:
-                break
-            k+=1
+        for c in ['segmentation', 'bbox', 'iscrowd', 'area']:
+            ann_new['images'][k][c] = ann['annotations'][i][c]
 
-        if k==len(ann['images']):
-            print('Nothing found for {}'.format(line['path_image']))
-        else:
-            img_name = ann['images'][k]['file_name']
-            ann['images'][k]['id'] = i
-            ann['images'][k]['image_id'] = i
-            ann['images'][k]['file_name'] = img_name
+        ann_new['annotations'][k]['id'] = k
+        ann_new['annotations'][k]['image_id'] = k
 
-            for c in ['segmentation', 'bbox', 'iscrowd', 'area']:
-                ann['images'][k][c] = ann['annotations'][k][c]
-            ann_new['images'].append(ann['images'][k])
-
-            ann['annotations'][k]['id'] = i
-            ann['annotations'][k]['image_id'] = i
-            ann['images'][k]['category_id'] = ann['annotations'][k]['category_id']
-
-            ann_new['annotations'].append(ann['images'][k])
+        ann_new['annotations'][k]['category_id'] = ann['annotations'][i]['category_id']
+        # ann_new['annotations'][k] = ann_new['images'][k]
 
     return ann_new

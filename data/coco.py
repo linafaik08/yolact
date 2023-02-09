@@ -74,7 +74,6 @@ class COCODetection(data.Dataset):
         self.coco = COCO(info_file)
         
         self.ids = list(self.coco.imgToAnns.keys())
-        print("self.ids", self.ids)
         if len(self.ids) == 0 or not has_gt:
             self.ids = list(self.coco.imgs.keys())
         
