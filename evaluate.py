@@ -878,6 +878,7 @@ def evaluate(net:Yolact, dataset, train_mode=False):
     # TODO Currently we do not support Fast Mask Re-scroing in evalimage, evalimages, and evalvideo
     if args.image is not None:
         if ':' in args.image:
+            print('One single image to process')
             inp, out = args.image.split(':')
             evalimage(net, inp, out)
         else:
@@ -1090,9 +1091,6 @@ if __name__ == '__main__':
                 ap_data = pickle.load(f)
             calc_map(ap_data)
             exit()
-
-        print('args.image', args.image)
-        print('args.images', args.images)
 
         if args.image is None and args.video is None and args.images is None:
             dataset = COCODetection(cfg.dataset.valid_images, cfg.dataset.valid_info,
