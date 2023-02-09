@@ -910,6 +910,7 @@ def evaluate(net:Yolact, dataset, train_mode=False):
     else:
         timer.disable('Load Data')
 
+    print('dataset')
     dataset_indices = list(range(len(dataset)))
     
     if args.shuffle:
@@ -1086,6 +1087,9 @@ if __name__ == '__main__':
                 ap_data = pickle.load(f)
             calc_map(ap_data)
             exit()
+
+        print('args.image', args.image)
+        print('args.images', args.images)
 
         if args.image is None and args.video is None and args.images is None:
             dataset = COCODetection(cfg.dataset.valid_images, cfg.dataset.valid_info,
