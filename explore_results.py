@@ -1,3 +1,10 @@
+import datetime
+from PIL import Image
+import os
+import json
+import pandas as pd
+import numpy as np
+
 import plotly
 import plotly.graph_objects as go
 import plotly.express as px
@@ -5,7 +12,7 @@ import plotly.io as pio
 from plotly.subplots import make_subplots
 pio.templates.default = "plotly_white"
 
-eimport datetime
+
 
 def clean(data):
     data_df = pd.DataFrame.from_records(data)
@@ -64,3 +71,37 @@ def plot_training_logs(logs_train_df):
     fig.update_yaxes(title_text="Learning rate", secondary_y=True)
 
     return fig
+
+
+def get_image_with_inference(
+    img_name , path_imgs, path_masks, path_results,
+    horizontal = True, resize_factor=1, step=20,
+    img_extention = '.jpg', seg_extention = '.png'):
+
+
+    img = Image.open(os.path.join(path_imgs, img_name + img_extention))
+    img_mask = Image.open(os.path.join(path_masks, img_name + img_extention))
+    img_seg = Image.open(os.path.join(path_results, img_name + seg_extention))
+
+    if horizontal:
+
+        new_image = Image.new('RGB',(3*img.size[0]+step*2, img.size[1]), (250,250,250))
+
+        new_image.paste(img,(0,0))
+        new_image.paste(img_mask,(img.size[0]+step, 0))
+        new_image.paste(img_seg,(((img.size[0]+step)*2,0)))
+
+    else:
+
+        new_image = Image.new('RGB',(img.size[0], 3*img.size[1]+step*2), (250,250,250))
+
+        new_image.paste(img,(0,0))
+        new_image.paste(img_mask,(0,img.size[1]+step))
+        new_image.paste(img_seg,((0,(img.size[1]+step)*2)))
+
+
+    if resize_factor<1:
+        new_size = (int(new_image.size[0]*resize_factor),int(new_image.size[1]*resize_factor))
+        new_image = new_image.resize(new_size)
+
+    return new_image
