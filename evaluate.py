@@ -883,6 +883,7 @@ def evaluate(net:Yolact, dataset, train_mode=False):
         if ':' in args.image:
             print('One single image to process')
             inp, out = args.image.split(':')
+            print('args.image', args.image)
             evalimage(net, inp, out)
         else:
             evalimage(net, args.image)
