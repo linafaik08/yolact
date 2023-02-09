@@ -598,9 +598,6 @@ def evalimage(net:Yolact, path:str, save_path:str=None):
     preds = net(batch)
 
     img_numpy = prep_display(preds, frame, None, None, undo_transform=False)
-
-    print('path', path)
-    print('save_path', save_path)
     
     if save_path is None:
         img_numpy = img_numpy[:, :, (2, 1, 0)]
@@ -881,9 +878,7 @@ def evaluate(net:Yolact, dataset, train_mode=False):
     # TODO Currently we do not support Fast Mask Re-scroing in evalimage, evalimages, and evalvideo
     if args.image is not None:
         if ':' in args.image:
-            print('One single image to process')
             inp, out = args.image.split(':')
-            print('args.image', args.image)
             evalimage(net, inp, out)
         else:
             evalimage(net, args.image)
