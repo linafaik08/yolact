@@ -1051,6 +1051,7 @@ def print_maps(all_maps):
 if __name__ == '__main__':
     parse_args()
 
+    print('args.config', args.config)
     if args.config is not None:
         set_cfg(args.config)
 
