@@ -598,6 +598,9 @@ def evalimage(net:Yolact, path:str, save_path:str=None):
     preds = net(batch)
 
     img_numpy = prep_display(preds, frame, None, None, undo_transform=False)
+
+    print('path', path)
+    print('save_path', save_path)
     
     if save_path is None:
         img_numpy = img_numpy[:, :, (2, 1, 0)]
