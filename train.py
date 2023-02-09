@@ -78,7 +78,7 @@ parser.add_argument('--batch_alloc', default=None, type=str,
                     help='If using multiple GPUS, you can set this to be a comma separated list detailing which GPUs should get what local batch size (It should add up to your total batch size).')
 parser.add_argument('--no_autoscale', dest='autoscale', action='store_false',
                     help='YOLACT will automatically scale the lr and the number of iterations depending on the batch size. Set this if you want to disable that.')
-parser.add_argument('--max_iter', default=None,
+parser.add_argument('--max_iter', default=None,type=int,
                     help='Max iteration')
 
 
