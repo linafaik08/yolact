@@ -84,54 +84,54 @@ To evalute the model, put the corresponding weights file in the `./weights` dire
 ```Shell
 # Quantitatively evaluate a trained model on the entire validation set. Make sure you have COCO downloaded as above.
 # This should get 29.92 validation mask mAP last time I checked.
-python eval.py --trained_model=weights/yolact_base_54_800000.pth
+python evaluate.py --trained_model=weights/yolact_base_54_800000.pth
 
 # Output a COCOEval json to submit to the website or to use the run_coco_eval.py script.
 # This command will create './results/bbox_detections.json' and './results/mask_detections.json' for detection and instance segmentation respectively.
-python eval.py --trained_model=weights/yolact_base_54_800000.pth --output_coco_json
+python evaluate.py --trained_model=weights/yolact_base_54_800000.pth --output_coco_json
 
-# You can run COCOEval on the files created in the previous command. The performance should match my implementation in eval.py.
+# You can run COCOEval on the files created in the previous command. The performance should match my implementation in evaluate.py.
 python run_coco_eval.py
 
 # To output a coco json file for test-dev, make sure you have test-dev downloaded from above and go
-python eval.py --trained_model=weights/yolact_base_54_800000.pth --output_coco_json --dataset=coco2017_testdev_dataset
+python evaluate.py --trained_model=weights/yolact_base_54_800000.pth --output_coco_json --dataset=coco2017_testdev_dataset
 ```
 ## Qualitative Results on COCO
 ```Shell
 # Display qualitative results on COCO. From here on I'll use a confidence threshold of 0.15.
-python eval.py --trained_model=weights/yolact_base_54_800000.pth --score_threshold=0.15 --top_k=15 --display
+python evaluate.py --trained_model=weights/yolact_base_54_800000.pth --score_threshold=0.15 --top_k=15 --display
 ```
 ## Benchmarking on COCO
 ```Shell
 # Run just the raw model on the first 1k images of the validation set
-python eval.py --trained_model=weights/yolact_base_54_800000.pth --benchmark --max_images=1000
+python evaluate.py --trained_model=weights/yolact_base_54_800000.pth --benchmark --max_images=1000
 ```
 ## Images
 ```Shell
 # Display qualitative results on the specified image.
-python eval.py --trained_model=weights/yolact_base_54_800000.pth --score_threshold=0.15 --top_k=15 --image=my_image.png
+python evaluate.py --trained_model=weights/yolact_base_54_800000.pth --score_threshold=0.15 --top_k=15 --image=my_image.png
 
 # Process an image and save it to another file.
-python eval.py --trained_model=weights/yolact_base_54_800000.pth --score_threshold=0.15 --top_k=15 --image=input_image.png:output_image.png
+python evaluate.py --trained_model=weights/yolact_base_54_800000.pth --score_threshold=0.15 --top_k=15 --image=input_image.png:output_image.png
 
 # Process a whole folder of images.
-python eval.py --trained_model=weights/yolact_base_54_800000.pth --score_threshold=0.15 --top_k=15 --images=path/to/input/folder:path/to/output/folder
+python evaluate.py --trained_model=weights/yolact_base_54_800000.pth --score_threshold=0.15 --top_k=15 --images=path/to/input/folder:path/to/output/folder
 ```
 ## Video
 ```Shell
 # Display a video in real-time. "--video_multiframe" will process that many frames at once for improved performance.
 # If you want, use "--display_fps" to draw the FPS directly on the frame.
-python eval.py --trained_model=weights/yolact_base_54_800000.pth --score_threshold=0.15 --top_k=15 --video_multiframe=4 --video=my_video.mp4
+python evaluate.py --trained_model=weights/yolact_base_54_800000.pth --score_threshold=0.15 --top_k=15 --video_multiframe=4 --video=my_video.mp4
 
 # Display a webcam feed in real-time. If you have multiple webcams pass the index of the webcam you want instead of 0.
-python eval.py --trained_model=weights/yolact_base_54_800000.pth --score_threshold=0.15 --top_k=15 --video_multiframe=4 --video=0
+python evaluate.py --trained_model=weights/yolact_base_54_800000.pth --score_threshold=0.15 --top_k=15 --video_multiframe=4 --video=0
 
 # Process a video and save it to another file. This uses the same pipeline as the ones above now, so it's fast!
-python eval.py --trained_model=weights/yolact_base_54_800000.pth --score_threshold=0.15 --top_k=15 --video_multiframe=4 --video=input_video.mp4:output_video.mp4
+python evaluate.py --trained_model=weights/yolact_base_54_800000.pth --score_threshold=0.15 --top_k=15 --video_multiframe=4 --video=input_video.mp4:output_video.mp4
 ```
 As you can tell, `eval.py` can do a ton of stuff. Run the `--help` command to see everything it can do.
 ```Shell
-python eval.py --help
+python evaluate.py --help
 ```
 
 

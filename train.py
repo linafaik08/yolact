@@ -22,7 +22,7 @@ import argparse
 import datetime
 
 # Oof
-import eval as eval_script
+import evaluate as eval_script
 
 def str2bool(v):
     return v.lower() in ("yes", "true", "t", "1")

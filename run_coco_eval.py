@@ -1,6 +1,6 @@
 """
 Runs the coco-supplied cocoeval script to evaluate detections
-outputted by using the output_coco_json flag in eval.py.
+outputted by using the output_coco_json flag in evaluate.py.
 """
 
 

@@ -123,7 +123,7 @@ dataset_base = Config({
     'valid_images': './data/coco/images/',
     'valid_info':   'path_to_annotation_file',
 
-    # Whether or not to load GT. If this is False, eval.py quantitative evaluation won't work.
+    # Whether or not to load GT. If this is False, evaluate.py quantitative evaluation won't work.
     'has_gt': True,
 
     # A list of names for each of you classes.
