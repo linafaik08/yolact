@@ -881,6 +881,7 @@ def evaluate(net:Yolact, dataset, train_mode=False):
             evalimage(net, args.image)
         return
     elif args.images is not None:
+        print('args.images is not None')
         inp, out = args.images.split(':')
         evalimages(net, inp, out)
         return

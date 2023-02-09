@@ -44,6 +44,8 @@ COCO_CLASSES = ('person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus',
                 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase',
                 'scissors', 'teddy bear', 'hair drier', 'toothbrush')
 
+CRACK_CLASSES = ('crack')
+
 COCO_LABEL_MAP = { 1:  1,  2:  2,  3:  3,  4:  4,  5:  5,  6:  6,  7:  7,  8:  8,
                    9:  9, 10: 10, 11: 11, 13: 12, 14: 13, 15: 14, 16: 15, 17: 16,
                   18: 17, 19: 18, 20: 19, 21: 20, 22: 21, 23: 22, 24: 23, 25: 24,
@@ -146,7 +148,7 @@ crack_segmentation_dataset = dataset_base.copy({
     'train_info': './data/crack_segmentation/annotations/annotations_train.json',
     'valid_images': './data/crack_segmentation/images/',
     'valid_info': './data/crack_segmentation/annotations/annotations_val.json',
-
+    'class_names': CRACK_CLASSES,
     'label_map': {1:  1}
 })
 
