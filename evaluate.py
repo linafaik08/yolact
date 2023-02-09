@@ -621,7 +621,7 @@ def evalimages(net:Yolact, input_folder:str, output_folder:str):
         out_path = os.path.join(output_folder, name)
 
         evalimage(net, path, out_path)
-        print(path + ' -> ' + out_path)
+        #print(path + ' -> ' + out_path)
     print('Done.')
 
 from multiprocessing.pool import ThreadPool
@@ -1051,7 +1051,6 @@ def print_maps(all_maps):
 if __name__ == '__main__':
     parse_args()
 
-    print('args.config', args.config)
     if args.config is not None:
         set_cfg(args.config)
 
