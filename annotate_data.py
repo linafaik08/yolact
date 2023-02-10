@@ -49,11 +49,7 @@ coco_format["images"], coco_format["annotations"], annotation_cnt = images_annot
 
 paths_df.to_csv(os.path.join('data',cfg.dataset.name, 'paths.csv'), index=False)
 
-<<<<<<< HEAD
-=======
 
-
->>>>>>> b6ec595cf143a48bbc38a484cf85521a94a68fc2
 with open(cfg.dataset.annotation_file, 'w') as f:
     json.dump(coco_format, f)
 
