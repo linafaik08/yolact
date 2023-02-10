@@ -9,6 +9,16 @@ import os
 import json
 import pandas as pd
 
+
+def process_image(path, ksize=(3, 3), dst=220, thresh=255):
+    image = cv2.imread(path)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    blur = cv2.GaussianBlur(gray, ksize, 0)
+    thresh = cv2.threshold(blur, dst, thresh, cv2.THRESH_BINARY)[1]
+
+    return Image.fromarray(thresh).convert("RGB")
+
+
 def create_sub_masks(mask_image, width, height):
     # Initialize a dictionary of sub-masks indexed by RGB colors
 
@@ -16,23 +26,24 @@ def create_sub_masks(mask_image, width, height):
     for x in range(width):
         for y in range(height):
             # Get the RGB values of the pixel
-            pixel = mask_image.getpixel((x,y))[:3]
+            pixel = mask_image.getpixel((x, y))[:3]
 
             # Check to see if we have created a sub-mask...
             pixel_str = str(pixel)
-            sub_get_annmask = sub_masks.get(pixel_str)
+            sub_mask = sub_masks.get(pixel_str)
             if sub_mask is None:
-               # Create a sub-mask (one bit per pixel) and add to the dictionary
+                # Create a sub-mask (one bit per pixel) and add to the dictionary
                 # Note: we add 1 pixel of padding in each direction
                 # because the contours module doesn"t handle cases
                 # where pixels bleed to the edge of the image
 
-                sub_masks[pixel_str] = Image.new("1", (width+2, height+2))
+                sub_masks[pixel_str] = Image.new("1", (width + 2, height + 2))
 
             # Set the pixel value to 1 (default is 0), accounting for padding
-            sub_masks[pixel_str].putpixel((x+1, y+1), 1)
+            sub_masks[pixel_str].putpixel((x + 1, y + 1), 1)
 
     return sub_masks
+
 
 def create_sub_mask_annotation(sub_mask, tol, threshold_area):
     # Find contours (boundary lines) around each sub-mask
@@ -54,16 +65,17 @@ def create_sub_mask_annotation(sub_mask, tol, threshold_area):
 
         poly = poly.simplify(tol, preserve_topology=True)
 
-        if(poly.is_empty) or poly.area<threshold_area:
+        if (poly.is_empty) or poly.area < threshold_area:
             # Go to next iteration, dont save empty values in list
             continue
-
+        # print('poly.area', poly.area)
         polygons.append(poly)
 
         segmentation = np.array(poly.exterior.coords).ravel().tolist()
         segmentations.append(segmentation)
 
     return polygons, segmentations
+
 
 def create_category_annotation(category_dict):
     category_list = []
@@ -78,6 +90,7 @@ def create_category_annotation(category_dict):
 
     return category_list
 
+
 def create_image_annotation(file_name, width, height, image_id):
     images = {
         "file_name": file_name,
@@ -87,6 +100,7 @@ def create_image_annotation(file_name, width, height, image_id):
     }
 
     return images
+
 
 def create_annotation_format(polygon, segmentation, image_id, category_id, annotation_id):
     min_x, min_y, max_x, max_y = polygon.bounds
@@ -107,6 +121,7 @@ def create_annotation_format(polygon, segmentation, image_id, category_id, annot
 
     return annotation
 
+
 def get_coco_json_format():
     # Standard COCO format
     coco_format = {
@@ -119,7 +134,34 @@ def get_coco_json_format():
 
     return coco_format
 
-def images_annotations_info(paths_df, category_colors, multipolygon_ids, n_images_max=None, tol=100, threshold_area = 10):
+
+def clean_polygons(polygons):
+    for p1 in polygons:
+        for p2 in polygons:
+            if p1 != p2:
+                inter_area = p1.intersection(p2).area
+                union_area = p1.union(p2).area
+
+                # print('inter_area', inter_area)
+                # print('union_area', union_area)
+                # if union_area>0:
+                # print('ratio', inter_area/union_area)
+
+                if union_area > 0 and inter_area / union_area > 0:
+                    # print('ratio', inter_area/union_area)
+                    if p1.area > p2.area:
+                        new_polygons.append(polygons[i])
+                        polygons.remove(p2)
+                    else:
+                        polygons.remove(p1)
+    return polygons
+
+
+def images_annotations_info(
+        paths_df, category_colors, multipolygon_ids,
+        n_images_max=None,
+        ksize=(5, 5), dst=220, thresh=255,
+        tol=1, threshold_area=10):
     annotation_id = 0
     annotations = []
     images = []
@@ -129,9 +171,10 @@ def images_annotations_info(paths_df, category_colors, multipolygon_ids, n_image
     for image_id in range(n_images):
         line = paths_df.iloc[image_id]
 
-        print('image {}/{}'.format(image_id+1, n_images))
+        print('image {}/{}'.format(image_id + 1, n_images))
 
-        mask_image_open = Image.open(line.path_mask).convert("RGB")
+        # mask_image_open = Image.open(line.path_mask).convert("RGB")
+        mask_image_open = process_image(line.path_mask, ksize, dst, thresh)
         print(line.path_mask)
 
         w, h = mask_image_open.size
@@ -149,50 +192,25 @@ def images_annotations_info(paths_df, category_colors, multipolygon_ids, n_image
                 category_id = category_colors[color]
 
                 # "annotations" info
-                polygons, segmentations = create_sub_mask_annotation(sub_mask,  tol, threshold_area)
+                polygons, segmentations = create_sub_mask_annotation(sub_mask, tol, threshold_area)
 
-                #return sub_masks, polygons, segmentations
+                # return sub_masks, polygons, segmentations
 
                 # Check if we have classes that are a multipolygon
                 if category_id in multipolygon_ids:
-
                     # Combine the polygons to calculate the bounding box and area
+                    polygons = clean_polygons(polygons)
                     multi_poly = MultiPolygon(polygons)
 
-                    annotation = create_annotation_format(multi_poly, segmentations, image_id, category_id, annotation_id)
+                    annotation = create_annotation_format(multi_poly, segmentations, image_id, category_id,
+                                                          annotation_id)
 
                     annotations.append(annotation)
                     annotation_id += 1
 
         image_id += 1
 
-        if n_images_max is not None and n_images_max<=image_id:
+        if n_images_max is not None and n_images_max <= image_id:
             break
 
     return images, annotations, annotation_id
-
-
-def get_ann(ann, idx):
-    ann_new = {k: v for k, v in ann.items() if k in ['info', 'licenses', 'categories']}
-
-    ann_new['images'] = [{}] * (len(idx))
-    ann_new['annotations'] = [{}] * (len(idx))
-
-    for k, i in enumerate(idx):
-
-        ann_new['images'][k]['id'] = k
-        # ann_new['images'][k]['image_id'] = k
-
-        for c in ['file_name', 'height', 'width']:
-            ann_new['images'][k][c] = ann['images'][i][c]
-
-        for c in ['segmentation', 'bbox', 'iscrowd', 'area']:
-            ann_new['images'][k][c] = ann['annotations'][i][c]
-
-        ann_new['annotations'][k]['id'] = k
-        ann_new['annotations'][k]['image_id'] = k
-
-        ann_new['annotations'][k]['category_id'] = ann['annotations'][i]['category_id']
-        # ann_new['annotations'][k] = ann_new['images'][k]
-
-    return ann_new
